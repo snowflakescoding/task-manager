@@ -2,6 +2,8 @@
 
 A lightweight, multi-user Task Manager website built with Python (Flask) and Vanilla JavaScript. It features user authentication, real-time UI updates, and a persistent Dark Mode theme.
 
+**Author:** [SnowFlakes](https://x.com/snowflakesosu)
+
 **Live Demo:** https://sf-task-manager.vercel.app/
 
 ## ✨ Features
@@ -56,11 +58,17 @@ This project is configured for easy deployment on [Vercel](https://vercel.com).
 
 All notable changes to this project will be documented in this section.
 
+### [v0.6.0] - 2025-12-29
+**Languages Support, UI Update & Responsive Improvement**
+* Added **English** and **Japanese**.
+* Fixed **UI** by moving **Language** and **Dark Mode** to the top right of the screen.
+* Added responsive adjustment for all devices.
+
 ### [v0.5.0] - 2025-12-29
-**Favicon Including, Footer Editing, and Other Adjustments**
-* **Favicon**: named favicon.png.
-* **Footer**: add version number, creator and github link to the project.
-* **HTML/CSS**: update for better view.
+**Favicon Including, Footer Editing & Other Adjustments**
+* **Favicon**: Named favicon.png.
+* **Footer**: Added version number, creator and github link to the project.
+* **HTML/CSS**: Updated for better view.
 
 ### [v0.4.0] - 2025-12-29
 **Deployed & Patched**
