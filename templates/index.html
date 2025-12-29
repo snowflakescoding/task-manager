@@ -9,20 +9,20 @@
 </head>
 <body>
 
-    <div class="container">
-        
-        <div class="controls-wrapper">
-            <select id="lang-switch" class="lang-select" onchange="changeLanguage(this.value)">
-                <option value="en">🇺🇸 EN</option>
-                <option value="vi">🇻🇳 VI</option>
-                <option value="ja">🇯🇵 JA</option>
-            </select>
+    <div class="controls-wrapper">
+        <select id="lang-switch" class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="en">🇺🇸 EN</option>
+            <option value="vi">🇻🇳 VI</option>
+            <option value="ja">🇯🇵 JA</option>
+        </select>
 
-            <label class="switch" title="Toggle Dark Mode">
-                <input type="checkbox" id="checkbox" onchange="toggleTheme(this)">
-                <span class="slider"></span>
-            </label>
-        </div>
+        <label class="switch" title="Toggle Dark Mode">
+            <input type="checkbox" id="checkbox" onchange="toggleTheme(this)">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <div class="container">
 
         <h1 data-key="app_title">Task Manager</h1>
 
@@ -40,9 +40,9 @@
         <div id="task-section" class="hidden">
             <h3 data-key="my_tasks">My Tasks</h3>
             
-            <div style="display: flex; gap: 5px;">
+            <div class="input-group">
                 <input type="text" id="task-content" placeholder="What needs to be done?" data-ph="ph_task">
-                <button onclick="addTask()" class="btn-primary" style="width: auto;" data-key="btn_add">Add</button>
+                <button onclick="addTask()" class="btn-primary btn-add" data-key="btn_add">Add</button>
             </div>
 
             <div id="task-list">
@@ -52,7 +52,7 @@
         </div>
 
         <div class="footer">
-            <p>Version 0.6.0</p>
+            <p>Version 0.7.0</p>
             <p><span data-key="created_by">Created by</span> <strong>SnowFlakes</strong></p>
             <a href="https://github.com/snowflakescoding/task-manager" target="_blank" data-key="view_source">View Source on GitHub</a>
         </div>
@@ -76,7 +76,6 @@
                 btn_delete: "Delete",
                 created_by: "Created by",
                 view_source: "View Source on GitHub",
-                // Server Messages
                 msg_fill_fields: "Please fill in all fields.",
                 msg_registered: "Registration successful! Please login.",
                 err_user_exists: "Username already exists",
@@ -97,7 +96,6 @@
                 btn_delete: "Xóa",
                 created_by: "Được tạo bởi",
                 view_source: "Xem mã nguồn trên GitHub",
-                // Server Messages
                 msg_fill_fields: "Vui lòng điền đầy đủ thông tin.",
                 msg_registered: "Đăng ký thành công! Vui lòng đăng nhập.",
                 err_user_exists: "Tên đăng nhập đã tồn tại",
@@ -118,7 +116,6 @@
                 btn_delete: "削除",
                 created_by: "作成者:",
                 view_source: "GitHubでソースを見る",
-                // Server Messages
                 msg_fill_fields: "すべての項目を入力してください。",
                 msg_registered: "登録完了！ログインしてください。",
                 err_user_exists: "ユーザー名は既に存在します",
@@ -135,37 +132,27 @@
             localStorage.setItem('lang', lang);
             document.getElementById('lang-switch').value = lang;
 
-            // Update Text Content (h1, h3, buttons, spans, a)
             document.querySelectorAll('[data-key]').forEach(el => {
                 const key = el.getAttribute('data-key');
-                if (translations[lang][key]) {
-                    el.innerText = translations[lang][key];
-                }
+                if (translations[lang][key]) el.innerText = translations[lang][key];
             });
 
-            // Update Placeholders (inputs)
             document.querySelectorAll('[data-ph]').forEach(el => {
                 const key = el.getAttribute('data-ph');
-                if (translations[lang][key]) {
-                    el.placeholder = translations[lang][key];
-                }
+                if (translations[lang][key]) el.placeholder = translations[lang][key];
             });
 
-            // Update any Dynamic Delete buttons
             document.querySelectorAll('.btn-delete').forEach(btn => {
                 btn.innerText = translations[lang]['btn_delete'];
             });
         }
 
-        // Apply preferences on load
         window.onload = function() {
-            // Apply Theme
             const currentTheme = localStorage.getItem('theme');
             if (currentTheme === 'dark') {
                 document.body.classList.add('dark-mode');
                 document.getElementById('checkbox').checked = true;
             }
-            // Apply Language
             changeLanguage(currentLang);
         };
 
@@ -182,20 +169,17 @@
 
         // --- 3. HELPER: TRANSLATE SERVER MESSAGES ---
         function getTranslatedMsg(serverMsg) {
-            // Map raw server strings to translation keys
             const map = {
                 "Username already exists": "err_user_exists",
                 "Invalid credentials": "err_invalid",
                 "Unauthorized": "err_unauthorized",
                 "User created!": "msg_registered"
-                // Success login is handled by UI switch, not text
             };
-            
             const key = map[serverMsg];
             return (key && translations[currentLang][key]) ? translations[currentLang][key] : serverMsg;
         }
 
-        // --- 4. AUTHENTICATION LOGIC ---
+        // --- 4. APP LOGIC (Auth/Tasks) ---
         async function auth(endpoint) {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
@@ -222,28 +206,22 @@
                     loadTasks();
                 } else {
                     msg.style.color = "green";
-                    // Translate the success message
                     msg.innerText = getTranslatedMsg("User created!"); 
                 }
             } else {
                 msg.style.color = "red";
-                // Translate the error message
                 msg.innerText = getTranslatedMsg(data.error);
             }
         }
 
-        function logout() {
-            location.reload(); 
-        }
+        function logout() { location.reload(); }
 
-        // --- 5. TASK MANAGEMENT LOGIC ---
         async function loadTasks() {
             const res = await fetch('/tasks');
             const tasks = await res.json();
             const list = document.getElementById('task-list');
             list.innerHTML = '';
             tasks.forEach(task => {
-                // We add the 'btn-delete' class so changeLanguage() can find it later
                 const deleteText = translations[currentLang]['btn_delete'];
                 list.innerHTML += `
                     <div class="task-item">
@@ -256,7 +234,6 @@
         async function addTask() {
             const content = document.getElementById('task-content').value;
             if(!content) return;
-            
             await fetch('/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

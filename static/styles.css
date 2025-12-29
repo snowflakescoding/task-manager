@@ -12,7 +12,6 @@
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark Mode Overrides */
 body.dark-mode {
     --bg-color: #121212;
     --card-bg: #1e1e1e;
@@ -25,13 +24,7 @@ body.dark-mode {
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* --- GENERAL RESET --- */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    transition: background-color 0.3s, color 0.3s;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -41,164 +34,130 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 20px; /* Padding for mobile edges */
 }
 
 /* --- MAIN CONTAINER --- */
 .container {
     background-color: var(--card-bg);
     width: 100%;
-    max-width: 400px;
-    padding: 2rem;
-    border-radius: 10px;
+    max-width: 420px; /* Slightly wider */
+    padding: 2.5rem;
+    border-radius: 12px;
     box-shadow: var(--shadow);
-    position: relative;
+    /* No relative position needed for controls anymore */
 }
 
-h1, h3 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-    color: var(--heading-color);
+h1 { text-align: center; margin-bottom: 0.5rem; color: var(--heading-color); }
+h3 { text-align: center; margin-bottom: 1.5rem; opacity: 0.8; font-weight: normal; }
+
+/* --- CONTROLS (FIXED TO TOP RIGHT OF SCREEN) --- */
+.controls-wrapper {
+    position: fixed; /* Stick to the window, not the card */
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    background: rgba(0,0,0,0.05); /* Subtle background for visibility */
+    padding: 8px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(5px); /* Nice glass effect */
+}
+
+body.dark-mode .controls-wrapper {
+    background: rgba(255,255,255,0.1);
+}
+
+.lang-select {
+    padding: 4px 8px;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    cursor: pointer;
+    margin-bottom: 0; /* Override default input margin */
+    width: auto;
 }
 
 /* --- FORM ELEMENTS --- */
-input[type="text"], 
-input[type="password"],
-select { /* Added select here */
+input[type="text"], input[type="password"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
     border: 1px solid var(--input-border);
     background-color: var(--input-bg);
     color: var(--input-text);
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
 }
+input:focus { border-color: var(--primary-color); outline: none; }
 
-input:focus, select:focus {
-    border-color: var(--primary-color);
-    outline: none;
+/* Input Group for Add Task (Side by side) */
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
 }
+.input-group input { margin-bottom: 0; }
+.btn-add { width: auto; margin-bottom: 0; padding: 0 20px; white-space: nowrap; }
 
 /* --- BUTTONS --- */
 button {
     width: 100%;
     padding: 12px;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 600;
     margin-bottom: 10px;
 }
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-}
-.btn-primary:hover {
-    filter: brightness(90%);
-}
-
-.btn-secondary {
-    background-color: #95a5a6;
-    color: white;
-}
-.btn-secondary:hover {
-    background-color: #7f8c8d;
-}
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-primary:hover { filter: brightness(90%); }
+.btn-secondary { background-color: #95a5a6; color: white; }
+.btn-secondary:hover { background-color: #7f8c8d; }
 
 .btn-delete {
     background-color: #e74c3c;
     color: white;
     width: auto;
-    padding: 5px 10px;
-    font-size: 14px;
+    padding: 6px 12px;
+    font-size: 13px;
     margin-bottom: 0;
 }
-.btn-delete:hover {
-    background-color: #c0392b;
-}
+.btn-delete:hover { background-color: #c0392b; }
 
 /* --- TASK LIST --- */
-#task-list {
-    margin-top: 20px;
-}
-
 .task-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: var(--task-bg);
-    padding: 10px 15px;
+    padding: 12px 15px;
     margin-bottom: 10px;
-    border-radius: 5px;
-    border-left: 4px solid var(--primary-color);
-    animation: fadeIn 0.3s ease-in-out;
+    border-radius: 8px;
+    border-left: 5px solid var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- TOP CONTROLS (Lang + Dark Mode) --- */
-.controls-wrapper {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Language Dropdown Styling */
-.lang-select {
-    padding: 5px;
-    font-size: 12px;
-    width: auto;
-    margin-bottom: 0;
-    height: 24px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Toggle Switch */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 40px; /* Made slightly smaller to fit */
-    height: 22px;
-}
-
+/* --- TOGGLE SWITCH --- */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
 .switch input { display: none; }
-
 .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc;
-    border-radius: 34px;
-    transition: .4s;
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc; border-radius: 34px; transition: .4s;
 }
-
 .slider:before {
-    position: absolute;
-    content: "";
-    height: 16px;
-    width: 16px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: .4s;
+    position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px;
+    background-color: white; border-radius: 50%; transition: .4s;
 }
-
 input:checked + .slider { background-color: var(--primary-color); }
-input:checked + .slider:before { transform: translateX(18px); }
+input:checked + .slider:before { transform: translateX(20px); }
 
 /* --- FOOTER --- */
 .footer {
@@ -206,23 +165,44 @@ input:checked + .slider:before { transform: translateX(18px); }
     padding-top: 20px;
     border-top: 1px solid var(--input-border);
     text-align: center;
-    font-size: 0.85rem;
-    color: var(--text-color);
-    opacity: 0.7;
+    font-size: 0.8rem;
+    opacity: 0.6;
 }
+.footer a { color: var(--primary-color); text-decoration: none; }
 
-.footer p {
-    margin-bottom: 5px;
-}
+/* --- RESPONSIVE DESIGN (MOBILE) --- */
+@media (max-width: 480px) {
+    body {
+        /* Move content down so it doesn't hit the fixed header */
+        align-items: flex-start; 
+        padding-top: 80px; 
+    }
 
-.footer a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: bold;
-    transition: opacity 0.3s;
-}
+    .container {
+        padding: 1.5rem;
+        width: 100%;
+    }
 
-.footer a:hover {
-    text-decoration: underline;
-    opacity: 0.8;
+    /* Make controls smaller on mobile */
+    .controls-wrapper {
+        top: 10px;
+        right: 10px;
+        padding: 6px 10px;
+    }
+    
+    .lang-select { font-size: 12px; }
+    .switch { width: 36px; height: 20px; }
+    .slider:before { height: 14px; width: 14px; bottom: 3px; }
+    input:checked + .slider:before { transform: translateX(16px); }
+
+    h1 { font-size: 1.8rem; }
+    
+    /* Stack input group if screen is VERY small */
+    .input-group {
+        flex-direction: column;
+    }
+    .btn-add {
+        width: 100%;
+        padding: 12px;
+    }
 }
