@@ -26,12 +26,17 @@ body.dark-mode {
 }
 
 /* --- GENERAL RESET --- */
-* { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.3s, color 0.3s;
+}
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color); /* Uses variable */
-    color: var(--text-color);          /* Uses variable */
+    background-color: var(--bg-color);
+    color: var(--text-color);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -40,19 +45,24 @@ body {
 
 /* --- MAIN CONTAINER --- */
 .container {
-    background-color: var(--card-bg); /* Uses variable */
+    background-color: var(--card-bg);
     width: 100%;
     max-width: 400px;
     padding: 2rem;
     border-radius: 10px;
     box-shadow: var(--shadow);
-    position: relative; /* For positioning the toggle switch */
+    position: relative;
 }
 
-h1, h3 { text-align: center; margin-bottom: 1.5rem; color: var(--heading-color); }
+h1, h3 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--heading-color);
+}
 
-/* --- FORMS --- */
-input[type="text"], input[type="password"] {
+/* --- FORM ELEMENTS --- */
+input[type="text"], 
+input[type="password"] {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -63,7 +73,10 @@ input[type="text"], input[type="password"] {
     font-size: 16px;
 }
 
-input:focus { border-color: var(--primary-color); outline: none; }
+input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
 
 /* --- BUTTONS --- */
 button {
@@ -77,11 +90,21 @@ button {
     margin-bottom: 10px;
 }
 
-.btn-primary { background-color: var(--primary-color); color: white; }
-.btn-primary:hover { filter: brightness(90%); }
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+.btn-primary:hover {
+    filter: brightness(90%);
+}
 
-.btn-secondary { background-color: #95a5a6; color: white; }
-.btn-secondary:hover { background-color: #7f8c8d; }
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
 
 .btn-delete {
     background-color: #e74c3c;
@@ -91,23 +114,35 @@ button {
     font-size: 14px;
     margin-bottom: 0;
 }
-.btn-delete:hover { background-color: #c0392b; }
+.btn-delete:hover {
+    background-color: #c0392b;
+}
 
 /* --- TASK LIST --- */
-#task-list { margin-top: 20px; }
+#task-list {
+    margin-top: 20px;
+}
 
 .task-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: var(--task-bg); /* Uses variable */
+    background-color: var(--task-bg);
     padding: 10px 15px;
     margin-bottom: 10px;
     border-radius: 5px;
     border-left: 4px solid var(--primary-color);
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-.hidden { display: none; }
+.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* --- TOGGLE SWITCH (Top Right) --- */
 .theme-switch-wrapper {
@@ -150,3 +185,30 @@ button {
 
 input:checked + .slider { background-color: var(--primary-color); }
 input:checked + .slider:before { transform: translateX(26px); }
+
+/* --- FOOTER --- */
+.footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--input-border);
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+.footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+    transition: opacity 0.3s;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}

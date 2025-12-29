@@ -56,6 +56,12 @@ This project is configured for easy deployment on [Vercel](https://vercel.com).
 
 All notable changes to this project will be documented in this section.
 
+### [v0.5.0] - 2025-12-29
+**Favicon Including, Footer Editing, and Other Adjustments**
+* **Favicon**: named favicon.png.
+* **Footer**: add version number, creator and github link to the project.
+* **HTML/CSS**: update for better view.
+
 ### [v0.4.0] - 2025-12-29
 **Deployed & Patched**
 * **Refactor:** Switched database from SQLite to In-Memory Python dictionaries to support Vercel's stateless environment.
