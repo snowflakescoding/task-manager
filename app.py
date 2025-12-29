@@ -20,7 +20,8 @@ def index():
 
 @app.route('/register', methods=['POST'])
 def register():
-    global user_id_counter
+    global user_id_counter # Declared at top
+    
     data = request.json
     username = data.get('username')
     password = hashlib.sha256(data.get('password').encode()).hexdigest()
@@ -50,6 +51,10 @@ def login():
 
 @app.route('/tasks', methods=['GET', 'POST', 'DELETE'])
 def tasks():
+    # FIX: These must be at the very top of the function
+    global tasks_db 
+    global task_id_counter
+
     if 'user_id' not in session:
         return jsonify({"error": "Unauthorized"}), 401
     
@@ -60,7 +65,6 @@ def tasks():
         return jsonify(user_tasks)
 
     if request.method == 'POST':
-        global task_id_counter
         content = request.json.get('content')
         tasks_db.append({
             'id': task_id_counter,
@@ -73,7 +77,6 @@ def tasks():
     if request.method == 'DELETE':
         task_id = request.json.get('id')
         # Filter out the task with the matching ID and User ID
-        global tasks_db
         tasks_db = [t for t in tasks_db if not (t['id'] == task_id and t['user_id'] == user_id)]
         return jsonify({"message": "Task deleted"})
 
