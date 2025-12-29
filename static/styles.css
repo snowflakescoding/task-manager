@@ -1,0 +1,152 @@
+/* --- THEME VARIABLES --- */
+:root {
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --heading-color: #2c3e50;
+    --input-bg: #ffffff;
+    --input-border: #ddd;
+    --input-text: #333;
+    --task-bg: #f9f9f9;
+    --primary-color: #3498db;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Mode Overrides */
+body.dark-mode {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --heading-color: #ffffff;
+    --input-bg: #2d2d2d;
+    --input-border: #444;
+    --input-text: #e0e0e0;
+    --task-bg: #2d2d2d;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* --- GENERAL RESET --- */
+* { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.3s, color 0.3s; }
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color); /* Uses variable */
+    color: var(--text-color);          /* Uses variable */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- MAIN CONTAINER --- */
+.container {
+    background-color: var(--card-bg); /* Uses variable */
+    width: 100%;
+    max-width: 400px;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    position: relative; /* For positioning the toggle switch */
+}
+
+h1, h3 { text-align: center; margin-bottom: 1.5rem; color: var(--heading-color); }
+
+/* --- FORMS --- */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+input:focus { border-color: var(--primary-color); outline: none; }
+
+/* --- BUTTONS --- */
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.btn-primary { background-color: var(--primary-color); color: white; }
+.btn-primary:hover { filter: brightness(90%); }
+
+.btn-secondary { background-color: #95a5a6; color: white; }
+.btn-secondary:hover { background-color: #7f8c8d; }
+
+.btn-delete {
+    background-color: #e74c3c;
+    color: white;
+    width: auto;
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-bottom: 0;
+}
+.btn-delete:hover { background-color: #c0392b; }
+
+/* --- TASK LIST --- */
+#task-list { margin-top: 20px; }
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--task-bg); /* Uses variable */
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.hidden { display: none; }
+
+/* --- TOGGLE SWITCH (Top Right) --- */
+.theme-switch-wrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.switch input { display: none; }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    border-radius: 34px;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%;
+    transition: .4s;
+}
+
+input:checked + .slider { background-color: var(--primary-color); }
+input:checked + .slider:before { transform: translateX(26px); }

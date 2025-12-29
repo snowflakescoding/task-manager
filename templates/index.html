@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="theme-switch-wrapper">
+            <label class="switch" title="Toggle Dark Mode">
+                <input type="checkbox" id="checkbox" onchange="toggleTheme(this)">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <h1>Task Manager</h1>
+
+        <div id="auth-section">
+            <h3>Login</h3>
+            <input type="text" id="username" placeholder="Enter Username">
+            <input type="password" id="password" placeholder="Enter Password">
+            
+            <button onclick="auth('login')" class="btn-primary">Login</button>
+            <button onclick="auth('register')" class="btn-secondary">Register New User</button>
+            
+            <p id="auth-msg" style="color: #e74c3c; text-align: center; margin-top: 10px;"></p>
+        </div>
+
+        <div id="task-section" class="hidden">
+            <h3>My Tasks</h3>
+            
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="task-content" placeholder="What needs to be done?">
+                <button onclick="addTask()" class="btn-primary" style="width: auto;">Add</button>
+            </div>
+
+            <div id="task-list">
+                </div>
+
+            <button onclick="logout()" class="btn-secondary" style="margin-top: 20px;">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // --- DARK MODE LOGIC ---
+        
+        // 1. Check LocalStorage on load
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('checkbox').checked = true;
+        }
+
+        // 2. Function to toggle theme
+        function toggleTheme(e) {
+            if (e.checked) {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // --- AUTH & APP LOGIC (Same as before) ---
+
+        async function auth(endpoint) {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const msg = document.getElementById('auth-msg');
+
+            if (!user || !pass) {
+                msg.innerText = "Please fill in all fields.";
+                return;
+            }
+
+            const res = await fetch(`/${endpoint}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                msg.innerText = "";
+                if(endpoint === 'login') {
+                    document.getElementById('auth-section').classList.add('hidden');
+                    document.getElementById('task-section').classList.remove('hidden');
+                    loadTasks();
+                } else {
+                    msg.style.color = "green";
+                    msg.innerText = "Registration successful! Please login.";
+                }
+            } else {
+                msg.style.color = "red";
+                msg.innerText = data.error;
+            }
+        }
+
+        function logout() {
+            location.reload(); 
+        }
+
+        async function loadTasks() {
+            const res = await fetch('/tasks');
+            const tasks = await res.json();
+            const list = document.getElementById('task-list');
+            list.innerHTML = '';
+            tasks.forEach(task => {
+                list.innerHTML += `
+                    <div class="task-item">
+                        <span>${task.content}</span>
+                        <button onclick="deleteTask(${task.id})" class="btn-delete">Delete</button>
+                    </div>`;
+            });
+        }
+
+        async function addTask() {
+            const content = document.getElementById('task-content').value;
+            if(!content) return;
+            
+            await fetch('/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: content })
+            });
+            document.getElementById('task-content').value = '';
+            loadTasks();
+        }
+
+        async function deleteTask(id) {
+            await fetch('/tasks', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id })
+            });
+            loadTasks();
+        }
+    </script>
+</body>
+</html>
