@@ -62,7 +62,8 @@ h1, h3 {
 
 /* --- FORM ELEMENTS --- */
 input[type="text"], 
-input[type="password"] {
+input[type="password"],
+select { /* Added select here */
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -73,7 +74,7 @@ input[type="password"] {
     font-size: 16px;
 }
 
-input:focus {
+input:focus, select:focus {
     border-color: var(--primary-color);
     outline: none;
 }
@@ -144,20 +145,33 @@ button {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- TOGGLE SWITCH (Top Right) --- */
-.theme-switch-wrapper {
+/* --- TOP CONTROLS (Lang + Dark Mode) --- */
+.controls-wrapper {
     position: absolute;
     top: 20px;
     right: 20px;
     display: flex;
     align-items: center;
+    gap: 10px;
 }
 
+/* Language Dropdown Styling */
+.lang-select {
+    padding: 5px;
+    font-size: 12px;
+    width: auto;
+    margin-bottom: 0;
+    height: 24px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Toggle Switch */
 .switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 24px;
+    width: 40px; /* Made slightly smaller to fit */
+    height: 22px;
 }
 
 .switch input { display: none; }
@@ -176,15 +190,15 @@ button {
     content: "";
     height: 16px;
     width: 16px;
-    left: 4px;
-    bottom: 4px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     border-radius: 50%;
     transition: .4s;
 }
 
 input:checked + .slider { background-color: var(--primary-color); }
-input:checked + .slider:before { transform: translateX(26px); }
+input:checked + .slider:before { transform: translateX(18px); }
 
 /* --- FOOTER --- */
 .footer {

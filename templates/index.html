@@ -11,56 +11,165 @@
 
     <div class="container">
         
-        <div class="theme-switch-wrapper">
+        <div class="controls-wrapper">
+            <select id="lang-switch" class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="en">🇺🇸 EN</option>
+                <option value="vi">🇻🇳 VI</option>
+                <option value="ja">🇯🇵 JA</option>
+            </select>
+
             <label class="switch" title="Toggle Dark Mode">
                 <input type="checkbox" id="checkbox" onchange="toggleTheme(this)">
                 <span class="slider"></span>
             </label>
         </div>
 
-        <h1>Task Manager</h1>
+        <h1 data-key="app_title">Task Manager</h1>
 
         <div id="auth-section">
-            <h3>Login</h3>
-            <input type="text" id="username" placeholder="Enter Username">
-            <input type="password" id="password" placeholder="Enter Password">
+            <h3 data-key="login_header">Login</h3>
+            <input type="text" id="username" placeholder="Enter Username" data-ph="ph_username">
+            <input type="password" id="password" placeholder="Enter Password" data-ph="ph_password">
             
-            <button onclick="auth('login')" class="btn-primary">Login</button>
-            <button onclick="auth('register')" class="btn-secondary">Register New User</button>
+            <button onclick="auth('login')" class="btn-primary" data-key="btn_login">Login</button>
+            <button onclick="auth('register')" class="btn-secondary" data-key="btn_register">Register New User</button>
             
             <p id="auth-msg" style="color: #e74c3c; text-align: center; margin-top: 10px;"></p>
         </div>
 
         <div id="task-section" class="hidden">
-            <h3>My Tasks</h3>
+            <h3 data-key="my_tasks">My Tasks</h3>
             
             <div style="display: flex; gap: 5px;">
-                <input type="text" id="task-content" placeholder="What needs to be done?">
-                <button onclick="addTask()" class="btn-primary" style="width: auto;">Add</button>
+                <input type="text" id="task-content" placeholder="What needs to be done?" data-ph="ph_task">
+                <button onclick="addTask()" class="btn-primary" style="width: auto;" data-key="btn_add">Add</button>
             </div>
 
             <div id="task-list">
                 </div>
 
-            <button onclick="logout()" class="btn-secondary" style="margin-top: 20px;">Logout</button>
+            <button onclick="logout()" class="btn-secondary" style="margin-top: 20px;" data-key="btn_logout">Logout</button>
         </div>
 
         <div class="footer">
-            <p>Version 0.5.0</p>
-            <p>Created by <strong>SnowFlakes</strong></p>
-            <a href="https://github.com/snowflakescoding/task-manager" target="_blank">View Source on GitHub</a>
+            <p>Version 0.6.0</p>
+            <p><span data-key="created_by">Created by</span> <strong>SnowFlakes</strong></p>
+            <a href="https://github.com/snowflakescoding/task-manager" target="_blank" data-key="view_source">View Source on GitHub</a>
         </div>
 
     </div>
 
     <script>
-        // --- 1. DARK MODE LOGIC ---
-        const currentTheme = localStorage.getItem('theme');
-        if (currentTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.getElementById('checkbox').checked = true;
+        // --- TRANSLATION DICTIONARY ---
+        const translations = {
+            en: {
+                app_title: "Task Manager",
+                login_header: "Login",
+                ph_username: "Enter Username",
+                ph_password: "Enter Password",
+                btn_login: "Login",
+                btn_register: "Register New User",
+                my_tasks: "My Tasks",
+                ph_task: "What needs to be done?",
+                btn_add: "Add",
+                btn_logout: "Logout",
+                btn_delete: "Delete",
+                created_by: "Created by",
+                view_source: "View Source on GitHub",
+                // Server Messages
+                msg_fill_fields: "Please fill in all fields.",
+                msg_registered: "Registration successful! Please login.",
+                err_user_exists: "Username already exists",
+                err_invalid: "Invalid credentials",
+                err_unauthorized: "Unauthorized"
+            },
+            vi: {
+                app_title: "Quản Lý Công Việc",
+                login_header: "Đăng Nhập",
+                ph_username: "Nhập tên đăng nhập",
+                ph_password: "Nhập mật khẩu",
+                btn_login: "Đăng Nhập",
+                btn_register: "Đăng Ký Mới",
+                my_tasks: "Danh Sách Công Việc",
+                ph_task: "Bạn cần làm gì?",
+                btn_add: "Thêm",
+                btn_logout: "Đăng Xuất",
+                btn_delete: "Xóa",
+                created_by: "Được tạo bởi",
+                view_source: "Xem mã nguồn trên GitHub",
+                // Server Messages
+                msg_fill_fields: "Vui lòng điền đầy đủ thông tin.",
+                msg_registered: "Đăng ký thành công! Vui lòng đăng nhập.",
+                err_user_exists: "Tên đăng nhập đã tồn tại",
+                err_invalid: "Sai thông tin đăng nhập",
+                err_unauthorized: "Không có quyền truy cập"
+            },
+            ja: {
+                app_title: "タスク管理",
+                login_header: "ログイン",
+                ph_username: "ユーザー名を入力",
+                ph_password: "パスワードを入力",
+                btn_login: "ログイン",
+                btn_register: "新規登録",
+                my_tasks: "マイタスク",
+                ph_task: "何をしますか？",
+                btn_add: "追加",
+                btn_logout: "ログアウト",
+                btn_delete: "削除",
+                created_by: "作成者:",
+                view_source: "GitHubでソースを見る",
+                // Server Messages
+                msg_fill_fields: "すべての項目を入力してください。",
+                msg_registered: "登録完了！ログインしてください。",
+                err_user_exists: "ユーザー名は既に存在します",
+                err_invalid: "認証情報が無効です",
+                err_unauthorized: "許可されていません"
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'en';
+
+        // --- 1. LANGUAGE LOGIC ---
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.getElementById('lang-switch').value = lang;
+
+            // Update Text Content (h1, h3, buttons, spans, a)
+            document.querySelectorAll('[data-key]').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+
+            // Update Placeholders (inputs)
+            document.querySelectorAll('[data-ph]').forEach(el => {
+                const key = el.getAttribute('data-ph');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+
+            // Update any Dynamic Delete buttons
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.innerText = translations[lang]['btn_delete'];
+            });
         }
 
+        // Apply preferences on load
+        window.onload = function() {
+            // Apply Theme
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                document.getElementById('checkbox').checked = true;
+            }
+            // Apply Language
+            changeLanguage(currentLang);
+        };
+
+        // --- 2. DARK MODE LOGIC ---
         function toggleTheme(e) {
             if (e.checked) {
                 document.body.classList.add('dark-mode');
@@ -71,14 +180,29 @@
             }
         }
 
-        // --- 2. AUTHENTICATION LOGIC ---
+        // --- 3. HELPER: TRANSLATE SERVER MESSAGES ---
+        function getTranslatedMsg(serverMsg) {
+            // Map raw server strings to translation keys
+            const map = {
+                "Username already exists": "err_user_exists",
+                "Invalid credentials": "err_invalid",
+                "Unauthorized": "err_unauthorized",
+                "User created!": "msg_registered"
+                // Success login is handled by UI switch, not text
+            };
+            
+            const key = map[serverMsg];
+            return (key && translations[currentLang][key]) ? translations[currentLang][key] : serverMsg;
+        }
+
+        // --- 4. AUTHENTICATION LOGIC ---
         async function auth(endpoint) {
             const user = document.getElementById('username').value;
             const pass = document.getElementById('password').value;
             const msg = document.getElementById('auth-msg');
 
             if (!user || !pass) {
-                msg.innerText = "Please fill in all fields.";
+                msg.innerText = translations[currentLang]['msg_fill_fields'];
                 return;
             }
 
@@ -89,6 +213,7 @@
             });
 
             const data = await res.json();
+            
             if (res.ok) {
                 msg.innerText = "";
                 if(endpoint === 'login') {
@@ -97,11 +222,13 @@
                     loadTasks();
                 } else {
                     msg.style.color = "green";
-                    msg.innerText = "Registration successful! Please login.";
+                    // Translate the success message
+                    msg.innerText = getTranslatedMsg("User created!"); 
                 }
             } else {
                 msg.style.color = "red";
-                msg.innerText = data.error;
+                // Translate the error message
+                msg.innerText = getTranslatedMsg(data.error);
             }
         }
 
@@ -109,17 +236,19 @@
             location.reload(); 
         }
 
-        // --- 3. TASK MANAGEMENT LOGIC ---
+        // --- 5. TASK MANAGEMENT LOGIC ---
         async function loadTasks() {
             const res = await fetch('/tasks');
             const tasks = await res.json();
             const list = document.getElementById('task-list');
             list.innerHTML = '';
             tasks.forEach(task => {
+                // We add the 'btn-delete' class so changeLanguage() can find it later
+                const deleteText = translations[currentLang]['btn_delete'];
                 list.innerHTML += `
                     <div class="task-item">
                         <span>${task.content}</span>
-                        <button onclick="deleteTask(${task.id})" class="btn-delete">Delete</button>
+                        <button onclick="deleteTask(${task.id})" class="btn-delete">${deleteText}</button>
                     </div>`;
             });
         }
